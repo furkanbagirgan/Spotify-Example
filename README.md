@@ -49,7 +49,7 @@ yarn install
 ```
 3.Run Project To Emulator or Real Device
 ```
-npx react-native start & npx react-native run-android
+npx expo start & npx expo run:android | npx expo run:ios
 or
-yarn start & yarn android
+yarn expo start & yarn expo run:android | yarn expo run:ios
 ```
