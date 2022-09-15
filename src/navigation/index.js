@@ -1,47 +1,50 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AuthStack from './AuthStack';
 import ContentStack from './ContentStack';
 import {setCurrentUser} from '../redux/authSlice';
 import {setTheme} from '../redux/themeSlice';
-import { auth } from '../firebase';
+import { auth } from '../utilities/firebase';
+import { showLoginError } from '../utilities/auth';
+import {getItem} from '../utilities/storage';
 
 const Navigation = () => {
   //setTheme and setCurrentUser function is accessed with the useDispatch hook.
+  const [userSession,setUserSession]=useState(null);
   const dispatch = useDispatch();
+
+  //It makes the getUserData function run when the application is first launched.
+  useEffect(()=>{
+    auth.onAuthStateChanged((user)=>{
+      setUserSession(!!user);
+    });
+  },[]);
+
+  //It makes the getUserData function run when the application is first launched.
+  useEffect(()=>{
+    getUserData();
+  },[getUserData]);
 
   //Checking if there is any user data saved in the storage. If there is, this user information is saved in redux.
   const getUserData = useCallback(async () => {
     try {
-      const userData = await AsyncStorage.getItem('@userData');
-      const themeData = await AsyncStorage.getItem('@themeData');
-      if (userData !== null) {
-        const user = JSON.parse(userData);
-        dispatch(setCurrentUser(user));
-        if (themeData !== null) {
-          const theme = JSON.parse(themeData);
-          dispatch(setTheme(theme));
-        }
-        await signInWithEmailAndPassword(auth,user.email,userPassword);
-      }
-    } catch (e) {
-      console.log('Storage Read Error');
+      const user = await getItem('@userData');
+      const theme = await getItem('@themeData');
+      await signInWithEmailAndPassword(auth,user.email,user.password);
+      dispatch(setCurrentUser(user));
+      dispatch(setTheme(theme));
+    } catch (error) {
+      showLoginError(error.code);
     }
   }, [dispatch]);
-
-  //It makes the getUserData function run when the application is first launched.
-  useEffect(() => {
-    getUserData();
-  }, [getUserData]);
 
   //Here, the appropriate navigation structure is displayed on the screen according to the user input status.
   return (
     <NavigationContainer>
-      {auth.currentUser? <ContentStack /> : <AuthStack />}
+      {userSession ? <ContentStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

@@ -1,5 +1,6 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useSelector} from 'react-redux';
 
 import Tabs from './Tabs';
 import Detail from './../screens/Detail';
@@ -11,6 +12,9 @@ const Stack = createNativeStackNavigator();
 
 //It is the navigation structure that will be displayed when the login is still made.
 const ContentStack = () => {
+  //The theme information is accessed with the useSelector hook.
+  const theme = useSelector(state => state.theme.theme);
+
   return (
     <Stack.Navigator>
       <Stack.Screen
@@ -22,9 +26,9 @@ const ContentStack = () => {
         name="Detail"
         component={Detail}
         options={({route}) => ({
-          headerStyle: {backgroundColor: route.params.theme === 'light' ? '#FFF' : '#191414'},
+          headerStyle: {backgroundColor: theme === 'light' ? '#FFF' : '#191414'},
           headerTitleAlign: 'center',
-          headerTintColor: route.params.theme === 'light' ? '#A9A9A9' : '#FFF',
+          headerTintColor: theme === 'light' ? '#A9A9A9' : '#FFF',
           headerTitle: route.params.listName,
           headerShadowVisible: false,
         })}
@@ -32,35 +36,35 @@ const ContentStack = () => {
       <Stack.Screen
         name="Settings"
         component={Settings}
-        options={({route}) => ({
-          headerStyle: {backgroundColor: route.params.theme === 'light' ? '#FFF' : '#191414'},
+        options={{
+          headerStyle: {backgroundColor: theme === 'light' ? '#FFF' : '#191414'},
           headerTitleAlign: 'center',
-          headerTintColor: route.params.theme === 'light' ? '#A9A9A9' : '#FFF',
+          headerTintColor: theme === 'light' ? '#A9A9A9' : '#FFF',
           headerTitle: 'Settings',
           headerShadowVisible: false,
-        })}
+        }}
       />
       <Stack.Screen
         name="Theme"
         component={Theme}
-        options={({route}) => ({
-          headerStyle: {backgroundColor: route.params.theme === 'light' ? '#FFF' : '#191414'},
+        options={{
+          headerStyle: {backgroundColor: theme === 'light' ? '#FFF' : '#191414'},
           headerTitleAlign: 'center',
-          headerTintColor: route.params.theme === 'light' ? '#A9A9A9' : '#FFF',
+          headerTintColor: theme === 'light' ? '#A9A9A9' : '#FFF',
           headerTitle: 'Select Theme',
           headerShadowVisible: false,
-        })}
+        }}
       />
       <Stack.Screen
         name="EditProfile"
         component={EditProfile}
-        options={({route}) => ({
-          headerStyle: {backgroundColor: route.params.theme === 'light' ? '#FFF' : '#191414'},
+        options={{
+          headerStyle: {backgroundColor: theme === 'light' ? '#FFF' : '#191414'},
           headerTitleAlign: 'center',
-          headerTintColor: route.params.theme === 'light' ? '#A9A9A9' : '#FFF',
+          headerTintColor: theme === 'light' ? '#A9A9A9' : '#FFF',
           headerTitle: 'Edit Profile',
           headerShadowVisible: false,
-        })}
+        }}
       />
     </Stack.Navigator>
   );
