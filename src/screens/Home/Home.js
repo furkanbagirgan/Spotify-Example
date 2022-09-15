@@ -4,26 +4,27 @@ import {useSelector, useDispatch} from 'react-redux';
 
 import styles from './Home.style';
 import MusicCard from '../../components/MusicCard';
-import {getFilteredMovies} from '../../redux/movieSlice';
+import {getFilteredMusic} from '../../redux/musicSlice';
 
 const Home = ({navigation}) => {
   //Necessary context data and states are created.
   const theme = useSelector(state => state.theme.theme);
-  const movies = useSelector(state => state.movie.filteredMovies);
-  const loading = useSelector(state => state.movie.loading);
-  const error = useSelector(state => state.movie.error);
+  const movies = useSelector(state => state.music.filteredMusic);
+  const loading = useSelector(state => state.music.loading);
+  const error = useSelector(state => state.music.error);
   const dispatch = useDispatch();
+  const [data,setData]=useState([]);
   const [selectedFilter, setSelectedFilter] = useState('top_rated');
 
-  //function that returns movies according to the selected filter
-  const getMoviesByFilter = useCallback(() => {
-    dispatch(getFilteredMovies(selectedFilter));
+  //function that returns musics according to the selected filter
+  const getMusicsByFilter = useCallback(() => {
+    dispatch(getFilteredMusic(selectedFilter));
   }, [selectedFilter, dispatch]);
 
-  //It runs the getMoviesByFilter function every time the selected filter changes.
+  //It runs the getMusicsByFilter function every time the selected filter changes.
   useEffect(() => {
-    getMoviesByFilter();
-  }, [selectedFilter, getMoviesByFilter]);
+    getMusicsByFilter();
+  }, [selectedFilter, getMusicsByFilter]);
 
   //Here is the function where key assignments of the fields to repeat in the flat list are made.
   const keyExtractor = item => {
@@ -31,7 +32,7 @@ const Home = ({navigation}) => {
   };
 
   //Here, there is a function that adjusts how the areas to be repeated in the
-  //flat list will appear on the screen. Also, a movieCard component is created for each chat.
+  //flat list will appear on the screen. Also, a musicCard component is created for each chat.
   const renderItem = ({item}) => {
     return (
       <MusicCard
@@ -39,15 +40,15 @@ const Home = ({navigation}) => {
         image={item.poster_path}
         description={item.overview}
         vote={item.vote_average}
-        handlePress={() => goToMovieDetail(item.id)}
+        handlePress={() => goToListDetail(item.id)}
         theme={theme}
       />
     );
   };
 
   //Here is the function that allows switching to the detail screen when each movieCard component is clicked.
-  const goToMovieDetail = movieId => {
-    navigation.navigate('Detail', {movieId});
+  const goToListDetail = listId => {
+    navigation.navigate('Detail', {listId});
   };
 
   //Here is the function that creates a line to appear between the areas to repeat in the flat list.
@@ -66,10 +67,10 @@ const Home = ({navigation}) => {
       ) : (
         <FlatList
           keyExtractor={keyExtractor}
-          data={movies}
+          data={data}
           renderItem={renderItem}
           refreshing={loading}
-          onRefresh={getMoviesByFilter}
+          onRefresh={getMusicsByFilter}
           overScrollMode="never"
           bounces={false}
           ItemSeparatorComponent={ItemDivider}
