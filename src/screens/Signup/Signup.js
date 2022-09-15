@@ -1,15 +1,17 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SafeAreaView, Text, View} from 'react-native';
 import {useSelector,useDispatch} from 'react-redux';
 import {createUserWithEmailAndPassword} from 'firebase/auth';
+import { useHeaderHeight } from '@react-navigation/elements';
 
 import styles from './Signup.style';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import {setCurrentUser} from '../../redux/authSlice';
 import {setTheme} from '../../redux/themeSlice';
-import { auth } from './../../firebase';
+import {auth} from '../../utilities/firebase';
+import {setItem} from '../../utilities/storage';
+import {checkSignup,showSignupError} from '../../utilities/auth';
 
 const Signup = () => {
   //Necessary states are created.
@@ -20,62 +22,68 @@ const Signup = () => {
   const [repeatPassword, setRepeatPassword] = useState('');
   const [userName, setUserName] = useState('');
   const dispatch = useDispatch();
+  const headerHeight = useHeaderHeight();
 
-  //user and the first theme value are saved to redux and storage.
+  //The entered information is checked and saved to firebase. Then this information is saved to storage and redux.
   const signup = async () => {
     setLoading(true);
-    try {
-      const user = {
-        email,
-        password,
-        userName,
-      };
-      await createUserWithEmailAndPassword(auth,email,password);
-      await AsyncStorage.setItem('@userData', JSON.stringify(user));
-      await AsyncStorage.setItem('@themeData', JSON.stringify('light'));
-      dispatch(setCurrentUser(user));
-      dispatch(setTheme('light'));
-    } catch (error) {
-      console.log(error.message);
+    const res=checkSignup(email,password,repeatPassword,userName);
+    if(res===1){
+      try {
+        const user = {
+          email,
+          password,
+          userName,
+        };
+        await createUserWithEmailAndPassword(auth,email,password);
+        await setItem('@userData', user);
+        await setItem('@themeData', 'light');
+        dispatch(setCurrentUser(user));
+        dispatch(setTheme('light'));
+      } catch (error) {
+        showSignupError(error.code);
+      }
     }
     setLoading(false);
   };
 
   //Here, inputs for user data and button are pressed to the screen.
   return (
-    <SafeAreaView style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
-      <Text style={styles.header}>Spotify</Text>
-      <Input
-        placeholder="Email"
-        placeholderTextColor="#A9A9A9"
-        value={email}
-        iconName="email"
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <Input
-        placeholder="Password"
-        placeholderTextColor="#A9A9A9"
-        value={password}
-        iconName="lock"
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      <Input
-        placeholder="Repeat Password"
-        placeholderTextColor="#A9A9A9"
-        value={repeatPassword}
-        iconName="lock"
-        onChangeText={setRepeatPassword}
-        secureTextEntry={true}
-      />
-      <Input
-        placeholder="User Name"
-        placeholderTextColor="#A9A9A9"
-        value={userName}
-        iconName="at"
-        onChangeText={setUserName}
-      />
+    <SafeAreaView style={{...styles[theme].container,paddingBottom:headerHeight}}>
+      <Text style={styles[theme].header}>Sign Up</Text>
+      <View style={styles[theme].formContainer}>
+        <Input
+          theme={theme}
+          placeholder="Email"
+          value={email}
+          iconName="mail"
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <Input
+          theme={theme}
+          placeholder="Password"
+          value={password}
+          iconName="lock-closed"
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+        <Input
+          theme={theme}
+          placeholder="Repeat Password"
+          value={repeatPassword}
+          iconName="lock-closed"
+          onChangeText={setRepeatPassword}
+          secureTextEntry={true}
+        />
+        <Input
+          theme={theme}
+          placeholder="User Name"
+          value={userName}
+          iconName="at"
+          onChangeText={setUserName}
+        />
+      </View>
       <Button title="Sign Up" loading={loading} onClick={signup} />
     </SafeAreaView>
   );
