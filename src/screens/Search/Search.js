@@ -15,6 +15,7 @@ const Search = ({navigation}) => {
   const loading = useSelector(state => state.search.loading);
   const error = useSelector(state => state.search.error);
   const dispatch = useDispatch();
+  const [data,setData]=useState([]);
   const [searchText, setSearchText] = useState('');
 
   //function that returns movies according to the searched text
@@ -63,14 +64,24 @@ const Search = ({navigation}) => {
       ) : (
         <FlatList
           keyExtractor={keyExtractor}
-          data={movies}
+          data={data}
           renderItem={renderItem}
           refreshing={loading}
           onRefresh={getMoviesBySearch}
           overScrollMode="never"
           bounces={false}
           ItemSeparatorComponent={ItemDivider}
-          ListHeaderComponent={
+          
+        />
+      )}
+    </SafeAreaView>
+  );
+};
+
+export default Search;
+
+/*
+ListHeaderComponent={
             <View style={styles.searchBar}>
               <View style={styles.inputWrapper}>
                 <Input
@@ -91,10 +102,4 @@ const Search = ({navigation}) => {
               </View>
             </View>
           }
-        />
-      )}
-    </SafeAreaView>
-  );
-};
-
-export default Search;
+*/
