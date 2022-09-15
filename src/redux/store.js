@@ -2,7 +2,7 @@ import {configureStore} from '@reduxjs/toolkit';
 
 import AuthReducer from './authSlice';
 import ThemeReducer from './themeSlice';
-import MovieReducer from './movieSlice';
+import MusicReducer from './musicSlice';
 import SearchReducer from './searchSlice';
 import DetailReducer from './detailSlice';
 
@@ -11,7 +11,7 @@ const store = configureStore({
   reducer: {
     auth: AuthReducer,
     theme: ThemeReducer,
-    movie: MovieReducer,
+    music: MusicReducer,
     search: SearchReducer,
     detail: DetailReducer,
   },
