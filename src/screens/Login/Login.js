@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
-import {SafeAreaView, Text} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SafeAreaView, Text, View} from 'react-native';
 import {useSelector,useDispatch} from 'react-redux';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -9,7 +8,9 @@ import Input from '../../components/Input';
 import Button from '../../components/Button';
 import {setCurrentUser} from '../../redux/authSlice';
 import {setTheme} from '../../redux/themeSlice';
-import {auth} from './../../firebase';
+import {auth} from '../../utilities/firebase';
+import {setItem} from '../../utilities/storage';
+import {checkLogin,showLoginError} from '../../utilities/auth';
 
 const Login = ({navigation}) => {
   //Necessary states are created.
@@ -19,22 +20,20 @@ const Login = ({navigation}) => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
-  //By checking the email from the server, user data and the first theme value are saved to redux and storage.
+  //The entered information is checked and entered into firebase. Then this information is saved to storage and redux.
   const login = async () => {
     setLoading(true);
-    try {
-      const user={
-        email,
-        password,
-        userName:''
+    const res=checkLogin(email,password);
+    if(res===1){
+      try {
+        await signInWithEmailAndPassword(auth,email,password);
+        await setItem('@userData', {email,password,userName:''});
+        await setItem('@themeData', 'light');
+        dispatch(setCurrentUser({email,password,userName:''}));
+        dispatch(setTheme('light'));
+      } catch (error) {
+        showLoginError(error.code);
       }
-      await signInWithEmailAndPassword(auth,email,password);
-      await AsyncStorage.setItem('@userData', JSON.stringify(user));
-      await AsyncStorage.setItem('@themeData', JSON.stringify('light'));
-      dispatch(setCurrentUser(user));
-      dispatch(setTheme('light'));
-    } catch (error) {
-      console.log(error.message);
     }
     setLoading(false);
   };
@@ -46,26 +45,28 @@ const Login = ({navigation}) => {
 
   //Here, inputs for user data and button are pressed to the screen.
   return (
-    <SafeAreaView style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
-      <Text style={styles.header}>Spotify</Text>
-      <Input
-        placeholder="Email"
-        placeholderTextColor="#A9A9A9"
-        value={email}
-        iconName="email"
-        onChangeText={setEmail}
-        keyboardType="email-address"
-      />
-      <Input
-        placeholder="Password"
-        placeholderTextColor="#A9A9A9"
-        value={password}
-        iconName="lock"
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
+    <SafeAreaView style={styles[theme].container}>
+      <Text style={styles[theme].header}>Login</Text>
+      <View style={styles[theme].formContainer}>
+        <Input
+          theme={theme}
+          placeholder="Email"
+          value={email}
+          iconName="mail"
+          onChangeText={setEmail}
+          keyboardType="email-address"
+        />
+        <Input
+          theme={theme}
+          placeholder="Password"
+          value={password}
+          iconName="lock-closed"
+          onChangeText={setPassword}
+          secureTextEntry={true}
+        />
+      </View>
       <Button title="Login" loading={loading} onClick={login} />
-      <Text style={styles.signupText}>Don't have an account?</Text>
+      <Text style={styles[theme].signupText}>Don't have an account?</Text>
       <Button title="Sign Up" onClick={goToSignup} />
     </SafeAreaView>
   );
