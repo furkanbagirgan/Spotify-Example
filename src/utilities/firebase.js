@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
-// Your web app's Firebase configuration
+//Web app's firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyCfcvMAuhcYCAmoXyAf57GAcmBl6S7lvls",
   authDomain: "spotify-example-1e45a.firebaseapp.com",
@@ -11,6 +11,6 @@ const firebaseConfig = {
   appId: "1:358314423142:web:e771ea65a6d82c7e544ea7"
 };
 
-// Initialize Firebase
+//Initialize firebase and auth
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
