@@ -1,18 +1,9 @@
 import {StyleSheet} from 'react-native';
 
-//Here the styles of the settings screen are created.
-const styles = StyleSheet.create({
-  lightContainer: {
+//Here the basic styles of the settings screen are created.
+const basicStyles=StyleSheet.create({
+  container: {
     flex: 1,
-    backgroundColor: 'white',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  darkContainer: {
-    flex: 1,
-    backgroundColor: '#1C0C5B',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
@@ -28,16 +19,49 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 75,
   },
-  lightUserName: {
-    color: 'black',
+  email: {
     fontSize: 16,
     marginBottom: 20,
   },
-  darkUserName: {
-    color: '#C996CC',
-    fontSize: 16,
-    marginBottom: 20,
+  buttonContainer:{
+    height: 115,
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 15
   },
+  bottomContainer:{
+    position: 'absolute',
+    bottom: 0,
+    alignSelf: 'center',
+    marginBottom: 25
+  }
 });
+
+//Here the styles of the settings screen are created.
+const styles = {
+  light:StyleSheet.create({
+    ...basicStyles,
+    container: {
+      ...basicStyles.container,
+      backgroundColor: 'white',
+    },
+    email: {
+      ...basicStyles.email,
+      color: '#A9A9A9',
+    },
+  }),
+  dark:StyleSheet.create({
+    ...basicStyles,
+    container: {
+      ...basicStyles.container,
+      backgroundColor: '#191414',
+    },
+    email: {
+      ...basicStyles.email,
+      color: '#FFF',
+    },
+  }),
+};
 
 export default styles;
