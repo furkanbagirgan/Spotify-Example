@@ -3,13 +3,12 @@ import {StyleSheet} from 'react-native';
 //Here the styles of the button are created.
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    paddingHorizontal: 50,
     height: 45,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 20,
-    borderRadius: 15,
+    borderRadius: 22,
     backgroundColor: '#1ED760',
   },
   title: {
