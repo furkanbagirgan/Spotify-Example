@@ -1,71 +1,35 @@
-import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSelector, useDispatch} from 'react-redux';
+import React from 'react';
+import {SafeAreaView,View,Text,Image} from 'react-native';
+import {useSelector} from 'react-redux';
+import Icon from '@expo/vector-icons/Ionicons';
 
 import styles from './Profile.style';
-import Input from '../../components/Input';
-import Button from '../../components/Button';
-import {setCurrentUser} from '../../redux/authSlice';
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   //Necessary context data and states are created.
   const userSession = useSelector(state => state.auth.currentUser);
   const theme = useSelector(state => state.theme.theme);
-  const dispatch = useDispatch();
-  const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState(userSession.email);
-  const [password, setPassword] = useState(userSession.password);
-  const [userName, setUserName] = useState(userSession.userName);
 
-  //Changed user data here is updated via context and storage.
-  const save = async () => {
-    setLoading(true);
-    try {
-      const userData = {
-        ...userSession,
-        email,
-        password,
-        userName,
-      };
-      await AsyncStorage.mergeItem('@userValue', JSON.stringify(userData));
-      dispatch(setCurrentUser(userData));
-    } catch (error) {
-      console.log('Storage Write Error');
-    }
-    setLoading(false);
+  //Here is the transition to the settings screen.
+  const goToSettings = () => {
+    navigation.navigate('Settings',{theme});
   };
 
-  //Here, the inputs to update the user data and the save button are pressed on the screen.
+  //Here, the user's favorite music and settings are listed.
   return (
-    <SafeAreaView
-      style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
-      <Input
-        placeholder="Email"
-        theme={theme}
-        placeholderTextColor="#C996CC"
-        value={email}
-        iconName="email"
-        onChangeText={setEmail}
-      />
-      <Input
-        placeholder="Password"
-        theme={theme}
-        placeholderTextColor="#C996CC"
-        value={password}
-        iconName="lock"
-        onChangeText={setPassword}
-        secureTextEntry={true}
-      />
-      <Input
-        placeholder="User Name"
-        theme={theme}
-        placeholderTextColor="#C996CC"
-        value={userName}
-        iconName="at"
-        onChangeText={setUserName}
-      />
-      <Button title="Save" loading={loading} onClick={save} />
+    <SafeAreaView style={styles[theme].container}>
+      <View style={styles[theme].userContainer}>
+        <View style={styles[theme].imageWrapper}>
+          <Image
+              source={{uri: 'https://picsum.photos/id/1010/150'}}
+              style={styles[theme].image}
+            />
+        </View>
+        <View style={styles[theme].rightContainer}>
+          <Text style={styles[theme].email}>{userSession.email}</Text>
+          <Icon name='settings' size={30} color={theme==='light'?'#A9A9A9':'#FFF'} onPress={goToSettings} />
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
