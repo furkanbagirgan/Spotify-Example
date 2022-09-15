@@ -1,56 +1,47 @@
-import React from 'react';
-import {Text, View, SafeAreaView, TouchableWithoutFeedback} from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from "react";
+import {
+  Text,
+  View,
+  SafeAreaView,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { useSelector, useDispatch } from "react-redux";
+import Icon from '@expo/vector-icons/Ionicons';
 
-import styles from './Theme.style';
-import {setTheme} from '../../redux/themeSlice';
+import styles from "./Theme.style";
+import { setTheme } from "../../redux/themeSlice";
+import { removeItem, setItem } from "../../utilities/storage";
 
 const Theme = () => {
   //Necessary context data and states are created.
-  const theme = useSelector(state => state.theme.theme);
+  const theme = useSelector((state) => state.theme.theme);
   const dispatch = useDispatch();
 
   //Here, the existing theme is changed according to the clicked theme.
-  const changeTheme = async themeName => {
-    try {
-      await AsyncStorage.removeItem('@themeData');
-      await AsyncStorage.setItem('@themeData', JSON.stringify(themeName));
-      dispatch(setTheme(themeName));
-    } catch (error) {
-      console.log('Storage Write Error');
-    }
+  const changeTheme = async (themeName) => {
+    await removeItem("@themeData");
+    await setItem("@themeData", JSON.stringify(themeName));
+    dispatch(setTheme(themeName));
   };
 
   //Here, 2 themes and their names are printed on the screen.
   return (
-    <SafeAreaView
-      style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
-      <View style={styles.themeWrapper}>
-        <TouchableWithoutFeedback
-          onPress={() => changeTheme('light')}
-          underlayColor="#eee">
-          <View style={styles.lightTheme} />
+    <SafeAreaView style={styles[theme].container}>
+      <View style={styles[theme].themeWrapper}>
+        <TouchableWithoutFeedback onPress={() => changeTheme("light")}>
+          <View style={styles[theme].lightTheme}>
+            <Icon name='sunny-outline' size={60} color='#FFF' />
+          </View>
         </TouchableWithoutFeedback>
-        <Text
-          style={
-            theme === 'light' ? styles.lightThemeText : styles.darkThemeText
-          }>
-          Light
-        </Text>
+        <Text style={styles[theme].themeText}>Light</Text>
       </View>
-      <View style={styles.themeWrapper}>
-        <TouchableWithoutFeedback
-          onPress={() => changeTheme('dark')}
-          underlayColor="#eee">
-          <View style={styles.darkTheme} />
+      <View style={styles[theme].themeWrapper}>
+        <TouchableWithoutFeedback onPress={() => changeTheme("dark")}>
+          <View style={styles[theme].darkTheme}>
+            <Icon name='moon-outline' size={60} color='#A9A9A9' />
+          </View>
         </TouchableWithoutFeedback>
-        <Text
-          style={
-            theme === 'light' ? styles.lightThemeText : styles.darkThemeText
-          }>
-          Dark
-        </Text>
+        <Text style={styles[theme].themeText}>Dark</Text>
       </View>
     </SafeAreaView>
   );
