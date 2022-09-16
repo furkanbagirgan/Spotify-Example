@@ -37,6 +37,7 @@ const Tabs = () => {
 
           return <Icon name={iconName} size={iconSize} color={color} />;
         },
+        tabBarStyle: {borderTopColor:'black'},
         headerStyle: {backgroundColor: theme === 'light' ? '#FFF' : '#191414'},
         headerTintColor: theme === 'light' ? '#A9A9A9' : '#FFF',
         headerTitleAlign: 'center',
