@@ -20,7 +20,7 @@ const Theme = () => {
   //Here, the existing theme is changed according to the clicked theme.
   const changeTheme = async (themeName) => {
     await removeItem("@themeData");
-    await setItem("@themeData", JSON.stringify(themeName));
+    await setItem("@themeData", themeName);
     dispatch(setTheme(themeName));
   };
 
