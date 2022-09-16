@@ -27,7 +27,7 @@ const Profile = ({navigation}) => {
         </View>
         <View style={styles[theme].rightContainer}>
           <Text style={styles[theme].email}>{userSession.email}</Text>
-          <Icon name='settings' size={30} color={theme==='light'?'#A9A9A9':'#FFF'} onPress={goToSettings} />
+          <Icon name='settings' size={30} color='#1ED760' onPress={goToSettings} />
         </View>
       </View>
     </SafeAreaView>
