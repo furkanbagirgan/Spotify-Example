@@ -1,23 +1,35 @@
 import {StyleSheet} from 'react-native';
 
-//Here the styles of the edit profile screen are created.
-const styles = StyleSheet.create({
-  lightContainer: {
+//Here the basic styles of the edit profile screen are created.
+const basicStyles=StyleSheet.create({
+  container: {
     flex: 1,
-    backgroundColor: 'white',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 25,
   },
-  darkContainer: {
-    flex: 1,
-    backgroundColor: '#1C0C5B',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 25,
-  },
+  buttonWrapper:{
+    marginTop: 15
+  }
 });
+
+//Here the styles of the edit profile screen are created.
+const styles = {
+  light:StyleSheet.create({
+    ...basicStyles,
+    container: {
+      ...basicStyles.container,
+      backgroundColor: 'white',
+    },
+  }),
+  dark:StyleSheet.create({
+    ...basicStyles,
+    container: {
+      ...basicStyles.container,
+      backgroundColor: '#191414',
+    },
+  })
+};
 
 export default styles;

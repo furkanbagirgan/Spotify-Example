@@ -1,12 +1,16 @@
 import React, {useState} from 'react';
-import {SafeAreaView} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Alert, SafeAreaView, View} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
+import { useHeaderHeight } from '@react-navigation/elements';
+import { updateEmail,updatePassword } from "firebase/auth";
 
 import styles from './EditProfile.style';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import {setCurrentUser} from '../../redux/authSlice';
+import {auth} from '../../utilities/firebase';
+import {updateItem} from '../../utilities/storage';
+import {checkSignup, showSignupError} from '../../utilities/auth';
 
 const EditProfile = () => {
   //Necessary context data and states are created.
@@ -17,6 +21,7 @@ const EditProfile = () => {
   const [email, setEmail] = useState(userSession.email);
   const [password, setPassword] = useState(userSession.password);
   const [userName, setUserName] = useState(userSession.userName);
+  const headerHeight = useHeaderHeight();
 
   //Changed user data here is updated via context and storage.
   const save = async () => {
@@ -28,10 +33,20 @@ const EditProfile = () => {
         password,
         userName,
       };
-      await AsyncStorage.mergeItem('@userValue', JSON.stringify(userData));
-      dispatch(setCurrentUser(userData));
+      const res=checkSignup(email,password,password,userName);
+      if(res!==0){
+        await updateItem('@userValue', userData);
+        if(userSession.email !== email){
+          await updateEmail(auth.currentUser,email);
+        }
+        if(userSession.password !== password){
+          await updatePassword(auth.currentUser,password);
+        }
+        dispatch(setCurrentUser(userData));
+        Alert.alert('Profile Update','The profile has been successfully updated.');
+      }
     } catch (error) {
-      console.log('Storage Write Error');
+      showSignupError(error.code);
     }
     setLoading(false);
   };
@@ -39,33 +54,32 @@ const EditProfile = () => {
   //Here, the inputs to update the user data and the save button are pressed on the screen.
   return (
     <SafeAreaView
-      style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
+      style={{...styles[theme].container,paddingBottom:headerHeight}}>
       <Input
         placeholder="Email"
         theme={theme}
-        placeholderTextColor="#C996CC"
         value={email}
-        iconName="email"
+        iconName="mail"
         onChangeText={setEmail}
       />
       <Input
         placeholder="Password"
         theme={theme}
-        placeholderTextColor="#C996CC"
         value={password}
-        iconName="lock"
+        iconName="lock-closed"
         onChangeText={setPassword}
         secureTextEntry={true}
       />
       <Input
         placeholder="User Name"
         theme={theme}
-        placeholderTextColor="#C996CC"
         value={userName}
         iconName="at"
         onChangeText={setUserName}
       />
-      <Button title="Save" loading={loading} onClick={save} />
+      <View style={styles[theme].buttonWrapper}>
+        <Button title="Save" loading={loading} onClick={save} />
+      </View>
     </SafeAreaView>
   );
 };
