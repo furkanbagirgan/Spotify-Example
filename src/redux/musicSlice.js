@@ -1,19 +1,25 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
-//The new incoming data is assigned to the existing filteredMusics.
-export const getFilteredMusic = createAsyncThunk(
-  'music/getFilteredMusic',
-  async selectedFilter => {
+//Get the new musics.
+export const getMusicsAndLists = createAsyncThunk(
+  'music/getMusicsAndLists',
+  async () => {
+    let result={musics:[],lists:[]};
     try {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/${selectedFilter}?api_key=8cafe31173adc15ddeaa1729dd482fc3&language=en-US`,
+      const resMusics = await axios.get(
+        'https://api.napster.com/v2.2/tracks/top?apikey=MDJhOWMwYTgtYmI4Ni00OTcwLWIzNDItZDJkODJmOTU2Zjc4&limit=10',
       );
-      if (response.status === 200) {
-        const musics =
-          selectedFilter !== 'latest' ? response.data.results : [response.data];
-        return musics;
-      }
+      if (resMusics.status === 200) {
+        result= {...result,musics:[...resMusics.data.tracks]};
+        const resLists = await axios.get(
+          'https://api.napster.com/v2.2/playlists/featured?apikey=MDJhOWMwYTgtYmI4Ni00OTcwLWIzNDItZDJkODJmOTU2Zjc4&limit=4',
+        );
+        if (resLists.status === 200) {
+          result= {...result,lists:[...resLists.data.playlists]};
+          return result;
+        }
+      }   
     } catch (error) {
       console.log(error.message);
     }
@@ -24,29 +30,31 @@ export const getFilteredMusic = createAsyncThunk(
 const musicSlice = createSlice({
   name: 'music',
   initialState: {
-    filteredMusics: [],
+    newMusics: [],
     loading: false,
     error: false,
+    newLists: [],
   },
-  extraReducers: builder => {
+  extraReducers: (builder) => {
     builder
-      .addCase(getFilteredMusic.pending, (state, action) => {
-        //The reducer that will be generated while the getFilteredMusic function is running.
+      .addCase(getMusicsAndLists.pending,(state, action) => {
+        //The reducer that will be generated while the getMusicsAndLists function is running.
         return {
           loading: true,
           error: false,
         };
       })
-      .addCase(getFilteredMusic.fulfilled, (state, action) => {
-        //The reducer that will occur when the getFilteredMusic function is positive.
+      .addCase(getMusicsAndLists.fulfilled,(state, action) => {
+        //The reducer that will be generated while the getMusicsAndLists function is running.
         return {
-          filteredMusics: action.payload,
+          newMusics: action.payload.musics,
+          newLists: action.payload.lists,
           loading: false,
           error: false,
         };
       })
-      .addCase(getFilteredMusic.rejected, (state, action) => {
-        //The reducer that will occur when the getFilteredMusic function has failed.
+      .addCase(getMusicsAndLists.rejected,(state, action) => {
+        //The reducer that will be generated while the getMusicsAndLists function is running.
         return {
           loading: false,
           error: true,
