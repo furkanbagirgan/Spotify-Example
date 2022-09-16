@@ -33,9 +33,11 @@ const Navigation = () => {
     try {
       const user = await getItem('@userData');
       const theme = await getItem('@themeData');
-      await signInWithEmailAndPassword(auth,user.email,user.password);
-      dispatch(setCurrentUser(user));
-      dispatch(setTheme(theme));
+      if(user !== 0 || theme !== 0){
+        await signInWithEmailAndPassword(auth,user.email,user.password);
+        dispatch(setCurrentUser(user));
+        dispatch(setTheme(theme));
+      }
     } catch (error) {
       showLoginError(error.code);
     }
