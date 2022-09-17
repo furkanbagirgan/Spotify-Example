@@ -12,8 +12,14 @@ In this assignment, an application with user login and showing musics was develo
 
 ## Screens
 <div>
-<kbd><img src="screenshots/login.jpg" width="250"></kbd>
-<kbd><img src="screenshots/signup.jpg" width="250"></kbd>
+<kbd><img src="screenshots/lightLogin.jpg" width="250"></kbd>
+<kbd><img src="screenshots/darkLogin.jpg" width="250"></kbd>
+<kbd><img src="screenshots/lightSignup.jpg" width="250"></kbd>
+</div>
+<div>
+<kbd><img src="screenshots/darkSignup.jpg" width="250"></kbd>
+<kbd><img src="screenshots/lightProfile.jpg" width="250"></kbd>
+<kbd><img src="screenshots/darkProfile.jpg" width="250"></kbd>
 </div>
 <div>
 <kbd><img src="screenshots/lightHome.jpg" width="250"></kbd>
@@ -27,12 +33,12 @@ In this assignment, an application with user login and showing musics was develo
 </div>
 <div>
 <kbd><img src="screenshots/lightSettings.jpg" width="250"></kbd>
-<kbd><img src="screenshots/lightProfile.jpg" width="250"></kbd>
+<kbd><img src="screenshots/lightEditProfile.jpg" width="250"></kbd>
 <kbd><img src="screenshots/lightTheme.jpg" width="250"></kbd>
 </div>
 <div>
 <kbd><img src="screenshots/darkSettings.jpg" width="250"></kbd>
-<kbd><img src="screenshots/darkProfile.jpg" width="250"></kbd>
+<kbd><img src="screenshots/darkEditProfile.jpg" width="250"></kbd>
 <kbd><img src="screenshots/darkTheme.jpg" width="250"></kbd>
 </div>
 
