@@ -34,7 +34,15 @@ const basicStyles=StyleSheet.create({
   },
   email: {
     fontSize: 16,
-  }
+  },
+  musicTitle:{
+    fontSize: 25,
+    fontWeight: 'bold',
+    marginTop: 20,
+  },
+  musicContainer: {
+    width:'100%',
+  },
 });
 
 //Here the changing styles of the profile screen are created.
@@ -49,6 +57,10 @@ const styles = {
       ...basicStyles.email,
       color: '#A9A9A9',
     },
+    musicTitle: {
+      ...basicStyles.musicTitle,
+      color: '#A9A9A9'
+    },
   }),
   dark: StyleSheet.create({
     ...basicStyles,
@@ -59,6 +71,10 @@ const styles = {
     email: {
       ...basicStyles.email,
       color: '#FFF',
+    },
+    musicTitle: {
+      ...basicStyles.musicTitle,
+      color: '#FFF'
     },
   }),
 };
