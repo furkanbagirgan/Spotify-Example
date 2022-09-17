@@ -1,17 +1,22 @@
 import {Dimensions, StyleSheet} from 'react-native';
 
-//Here the styles of the contactCard are created.
-const styles = StyleSheet.create({
+//Here the basic styles of the input are created.
+const basicStyles=StyleSheet.create({
   container: {
     width: '100%',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 15,
+    marginVertical: 10,
+  },
+  wrapper:{
+    width: '90%',
+    height: '100%',
+    flexDirection:'row',
   },
   imageWrapper: {
-    width: 100,
-    height: 150,
+    width: 70,
+    height: 70,
     alignSelf: 'flex-start',
   },
   image: {
@@ -19,42 +24,43 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   detailWrapper: {
-    width: Dimensions.get('screen').width - 140,
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'flex-start',
     marginLeft: 10,
   },
-  lightName: {
+  name: {
     fontWeight: 'bold',
     fontSize: 16,
-    color: 'black',
   },
-  darkName: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    color: 'white',
-  },
-  lightDescription: {
-    color: 'black',
-    marginTop: 5,
-  },
-  darkDescription: {
-    color: 'white',
-    marginTop: 5,
-  },
-  lightVote: {
-    color: 'black',
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginTop: 5,
-  },
-  darkVote: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
+  singer: {
     marginTop: 5,
   },
 });
+
+//Here the styles of the contactCard are created.
+const styles = {
+  light:StyleSheet.create({
+    ...basicStyles,
+    name:{
+      ...basicStyles.name,
+      color:'#A9A9A9'
+    },
+    singer:{
+      ...basicStyles.name,
+      color:'#A9A9A9'
+    }
+  }),
+  dark:StyleSheet.create({
+    ...basicStyles,
+    name:{
+      ...basicStyles.name,
+      color:'#FFF'
+    },
+    singer:{
+      ...basicStyles.name,
+      color:'#FFF'
+    }
+  }),
+};
 
 export default styles;
