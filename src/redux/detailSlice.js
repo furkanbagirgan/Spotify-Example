@@ -2,16 +2,16 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
 //The new incoming data is assigned to the existing movie detail.
-export const getMovieDetail = createAsyncThunk(
-  'detail/getMovieDetail',
-  async movieId => {
+export const getListDetail = createAsyncThunk(
+  'detail/getListDetail',
+  async listId => {
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/movie/${movieId}?api_key=8cafe31173adc15ddeaa1729dd482fc3&language=en-US`,
+        `https://api.napster.com/v2.2/playlists/${listId}/tracks?apikey=MDJhOWMwYTgtYmI4Ni00OTcwLWIzNDItZDJkODJmOTU2Zjc4&limit=15`,
       );
       if (response.status === 200) {
-        const movie = response.data;
-        return movie;
+        const musics = response.data.tracks;
+        return musics;
       }
     } catch (error) {
       console.log(error.message);
@@ -23,29 +23,29 @@ export const getMovieDetail = createAsyncThunk(
 const detailSlice = createSlice({
   name: 'detail',
   initialState: {
-    movie: {},
+    listMusics: {},
     loading: false,
     error: false,
   },
   extraReducers: builder => {
     builder
-      .addCase(getMovieDetail.pending, (state, action) => {
-        //The reducer that will occur when the getFilteredMovies function has failed.
+      .addCase(getListDetail.pending, (state, action) => {
+        //The reducer that will occur when the getListDetail function has failed.
         return {
           detailLoading: true,
           detailError: false,
         };
       })
-      .addCase(getMovieDetail.fulfilled, (state, action) => {
-        //The reducer that will occur when the getFilteredMovies function has failed.
+      .addCase(getListDetail.fulfilled, (state, action) => {
+        //The reducer that will occur when the getListDetail function has failed.
         return {
-          movie: action.payload,
+          listMusics: action.payload,
           detailLoading: false,
           detailError: false,
         };
       })
-      .addCase(getMovieDetail.rejected, (state, action) => {
-        //The reducer that will occur when the getFilteredMovies function has failed.
+      .addCase(getListDetail.rejected, (state, action) => {
+        //The reducer that will occur when the getListDetail function has failed.
         return {
           detailError: true,
           detailLoading: false,
