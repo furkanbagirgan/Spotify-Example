@@ -2,16 +2,16 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
 
 //The new incoming data is assigned to the existing searchedMovies.
-export const getSearchedMovies = createAsyncThunk(
-  'search/getSearchedMovies',
+export const getSearchedMusics = createAsyncThunk(
+  'search/getSearchedMusics',
   async searchedText => {
     try {
       const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?api_key=8cafe31173adc15ddeaa1729dd482fc3&language=en-US&page=1&query=${searchedText}`,
+        `https://api.napster.com/v2.2/search/verbose?apikey=MDJhOWMwYTgtYmI4Ni00OTcwLWIzNDItZDJkODJmOTU2Zjc4&query=${searchedText}&type=track&per_type_limit=15`,
       );
       if (response.status === 200) {
-        const movies = response.data.results;
-        return movies;
+        const musics = response.data.search.data.tracks;
+        return musics;
       }
     } catch (error) {
       console.log(error.message);
@@ -23,29 +23,29 @@ export const getSearchedMovies = createAsyncThunk(
 const searchSlice = createSlice({
   name: 'search',
   initialState: {
-    searchedMovies: [],
+    searchedMusics: [],
     loading: false,
     error: false,
   },
   extraReducers: builder => {
     builder
-      .addCase(getSearchedMovies.pending, (state, action) => {
-        //The reducer that will be generated while the getSearchedMovies function is running.
+      .addCase(getSearchedMusics.pending, (state, action) => {
+        //The reducer that will be generated while the getSearchedMusics function is running.
         return {
           loading: true,
           error: false,
         };
       })
-      .addCase(getSearchedMovies.fulfilled, (state, action) => {
-        //The reducer that will occur when the getSearchedMovies function is positive.
+      .addCase(getSearchedMusics.fulfilled, (state, action) => {
+        //The reducer that will occur when the getSearchedMusics function is positive.
         return {
-          searchedMovies: action.payload,
+          searchedMusics: action.payload,
           loading: false,
           error: false,
         };
       })
-      .addCase(getSearchedMovies.rejected, (state, action) => {
-        //The reducer that will occur when the getSearchedMovies function has failed.
+      .addCase(getSearchedMusics.rejected, (state, action) => {
+        //The reducer that will occur when the getSearchedMusics function has failed.
         return {
           loading: false,
           error: true,
