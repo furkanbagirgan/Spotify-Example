@@ -1,79 +1,99 @@
-import React, {useState} from 'react';
-import {SafeAreaView, Text, FlatList, View} from 'react-native';
+import React, {useState,useCallback} from 'react';
+import {SafeAreaView, Text, FlatList, View,ActivityIndicator} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from '@expo/vector-icons/Ionicons';
 
 import styles from './Search.style';
 import MusicCard from '../../components/MusicCard';
 import Input from '../../components/Input';
-import {getSearchedMovies} from '../../redux/searchSlice';
+import {getSearchedMusics} from '../../redux/searchSlice';
 
 const Search = ({navigation}) => {
   //Necessary context data and states are created.
   const theme = useSelector(state => state.theme.theme);
-  const movies = useSelector(state => state.search.searchedMovies);
+  const musics = useSelector(state => state.search.searchedMusics);
+  const likedMusics = useSelector(state => state.user.likedMusics);
   const loading = useSelector(state => state.search.loading);
   const error = useSelector(state => state.search.error);
   const dispatch = useDispatch();
-  const [data,setData]=useState([]);
   const [searchText, setSearchText] = useState('');
 
-  //function that returns movies according to the searched text
-  const getMoviesBySearch = () => {
-    dispatch(getSearchedMovies(encodeURI(searchText)));
+  //function that returns musics according to the searched text
+  const getMusicsBySearch = () => {
+    dispatch(getSearchedMusics(searchText));
   };
 
-  //Here is the function where key assignments of the fields to repeat in the flatlist are made.
-  const keyExtractor = item => {
-    return String(item.id);
+  //Here is the function where key assignments of the fields to repeat in the flat list are made.
+  const keyExtractor = (item) => {
+    return item.id;
   };
 
   //Here, there is a function that adjusts how the areas to be repeated in the
-  //flatlist will appear on the screen. Also, a movieCard component is created for each chat.
-  const renderItem = ({item}) => {
+  //flat list of newMusics will appear on the screen. Also, a MusicCard component is created for each chat.
+  const renderMusic = useCallback(({ item }) => {
+    const result=likedMusics.findIndex((music)=> {
+      return item.id===music.id;
+    });
+    const isLiked=result !== -1 ? true : false;
     return (
       <MusicCard
-        name={item.title}
-        image={item.poster_path}
-        description={item.overview}
-        vote={item.vote_average}
-        handlePress={() => goToMovieDetail(item.id)}
+        music={item}
         theme={theme}
+        isLiked={isLiked}
       />
     );
-  };
+  },[likedMusics]);
 
-  //Here is the function that allows switching to the detail screen when each movieCard component is clicked.
-  const goToMovieDetail = movieId => {
-    navigation.navigate('Detail', {movieId});
-  };
+  if (error) {
+    return (
+      <View style={styles[theme].errorWrapper}>
+        <Text style={styles[theme].errorText}>Connection Error</Text>
+      </View>
+    );
+  }
 
-  //Here is the function that creates a line to appear between the areas to repeat in the flatlist.
-  const ItemDivider = () => {
-    return <View style={styles.divider} />;
-  };
+  if (loading) {
+    return (
+      <View style={styles[theme].loadingContainer}>
+        <ActivityIndicator color="#A9A9A9" size={35} />
+      </View>
+    );
+  }
 
   //Here, the flatlist that will appear on the screen are created.
   return (
     <SafeAreaView
-      style={theme === 'light' ? styles.lightContainer : styles.darkContainer}>
-      {error ? (
-        <View style={styles.errorWrapper}>
-          <Text style={styles.errorText}>Connection Error</Text>
-        </View>
-      ) : (
-        <FlatList
-          keyExtractor={keyExtractor}
-          data={data}
-          renderItem={renderItem}
-          refreshing={loading}
-          onRefresh={getMoviesBySearch}
-          overScrollMode="never"
-          bounces={false}
-          ItemSeparatorComponent={ItemDivider}
-          
-        />
-      )}
+      style={styles[theme].container}>
+      <FlatList
+        contentContainerStyle={styles[theme].musicContainer}
+        keyExtractor={keyExtractor}
+        data={musics}
+        renderItem={renderMusic}
+        refreshing={loading}
+        overScrollMode="never"
+        bounces={false}
+        ListHeaderComponent={
+          <View style={styles[theme].searchBar}>
+              <View style={styles[theme].inputWrapper}>
+                <Input
+                  placeholder="Music Title..."
+                  value={searchText}
+                  iconName="search"
+                  theme={theme}
+                  onChangeText={setSearchText}
+                />
+              </View>
+              <View style={styles[theme].buttonWrapper}>
+                <Icon
+                  name="search"
+                  size={25}
+                  color="white"
+                  onPress={getMusicsBySearch}
+                />
+              </View>
+            </View>
+        }
+      />
     </SafeAreaView>
   );
 };
