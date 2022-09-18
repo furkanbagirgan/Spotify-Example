@@ -12,7 +12,7 @@ const userSlice = createSlice({
       const result=state.likedMusics.findIndex((music)=>action.payload.id===music.id);
       let newLikedMusics=[...state.likedMusics];
       if(result !== -1){
-        newLikedMusics=newLikedMusics.filter((music)=>music.id===action.payload.id);
+        newLikedMusics=newLikedMusics.filter((music)=>music.id!==action.payload.id);
       }
       else{
         newLikedMusics.push({...action.payload});
