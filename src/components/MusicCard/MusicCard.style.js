@@ -31,6 +31,7 @@ const basicStyles=StyleSheet.create({
   name: {
     fontWeight: 'bold',
     fontSize: 16,
+    flexShrink: 1
   },
   singer: {
     marginTop: 5,
