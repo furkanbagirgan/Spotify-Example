@@ -1,5 +1,5 @@
-# Assigment-5
-In this assignment, an application with user login and showing musics was developed. The user signs up to the application with their email, password and username. In the application, the home page contains the latest music and some lists. On the search page, user can see musics by genres or search by music name himself. In addition, if desired, the music can be liked and users can see these music in the "Liked Songs" section of their profile. Finally, it can edit application and account settings.
+# Spotify Example
+In this project, an application with user login and showing musics was developed. The user signs up to the application with their email, password and username. In the application, the home page contains the latest music and some lists. On the search page, user can see musics by genres or search by music name himself. In addition, if desired, the music can be liked and users can see these music in the "Liked Songs" section of their profile. Finally, it can edit application and account settings.
 
 ## Used technologies
 - Expo CLI
@@ -45,7 +45,7 @@ In this assignment, an application with user login and showing musics was develo
 ## Installation
 1.Clone Project
 ```
-git clone https://github.com/patika-218-akbank-reactnative-bootcamp/assignment-5-furkanbagirgan.git
+git clone https://github.com/furkanbagirgan/Spotify-Example.git
 ```
 2.Install the Necessary Packages for Project
 ```
